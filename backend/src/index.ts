@@ -1,5 +1,5 @@
 import express from "express"
-const rootRouter = require("./routes/index");
+import {rootRouter} from "./routes/index";
 
 
 
