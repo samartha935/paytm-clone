@@ -8,7 +8,7 @@ export const userRouter = express.Router();
 
 const signUpSchema = z.object({
   firstName: z.string().max(30),
-  lastNAme: z.string().max(30),
+  lastName: z.string().max(30),
   username: z.string().min(3).max(10),
   email: z.string().email(),
   password: z.string().min(8).max(50),
@@ -44,6 +44,8 @@ userRouter.post("/signup", async (req, res) => {
       const user = await User.create(payload);
       const documentID = user._id
       const token  = jwt.sign({documentID}, JWT_SECRET)
+      
+
       res.json({
         msg: "User created successfully.",
         token : token,
@@ -77,7 +79,8 @@ userRouter.post("/signin", async (req,res)=>{
 
     if(result){
         const documentID = result._id
-        const token = jwt.sign(documentID, JWT_SECRET)
+        const token = jwt.sign({documentID}, JWT_SECRET)
+
         res.json({
             msg : "You have signed in.",
             token : token
