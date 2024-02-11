@@ -1,24 +1,15 @@
 import express from "express";
-import z from "zod";
 import jwt from "jsonwebtoken"
 import { User } from "../db/db";
 import { JWT_SECRET } from "../config";
+import { CostumJwtPayload, authMiddleware } from "../middleware/auth";
+import { signUpSchema, signInSchema, updateInfoSchema } from "../zodSchema/zod";
+
+
+
 
 export const userRouter = express.Router();
 
-const signUpSchema = z.object({
-  firstName: z.string().max(30),
-  lastName: z.string().max(30),
-  username: z.string().min(3).max(10),
-  email: z.string().email(),
-  password: z.string().min(8).max(50),
-});
-
-
-const signInSchema = z.object({
-    username: z.string().min(3).max(10),
-    password: z.string().min(8).max(50),
-  });
 
 userRouter.post("/signup", async (req, res) => {
   try {
@@ -42,8 +33,8 @@ userRouter.post("/signup", async (req, res) => {
       });
     } else {
       const user = await User.create(payload);
-      const documentID = user._id
-      const token  = jwt.sign({documentID}, JWT_SECRET)
+      const documentId = user._id
+      const token  = jwt.sign({documentId}, JWT_SECRET)
       
 
       res.json({
@@ -53,6 +44,7 @@ userRouter.post("/signup", async (req, res) => {
     }
   } catch (err) {
     console.log(err);
+    res.status(403).json({});
   }
 });
 
@@ -78,8 +70,8 @@ userRouter.post("/signin", async (req,res)=>{
     })
 
     if(result){
-        const documentID = result._id
-        const token = jwt.sign({documentID}, JWT_SECRET)
+        const documentId = result._id
+        const token = jwt.sign({documentId}, JWT_SECRET)
 
         res.json({
             msg : "You have signed in.",
@@ -91,6 +83,45 @@ userRouter.post("/signin", async (req,res)=>{
         })
     }}catch(err){
         console.log(err);
+        res.status(403).json({});
     }
 })
 
+
+
+userRouter.post("/update", authMiddleware ,async(req,res)=>{
+ try { 
+  const payload = req.body
+
+  const parsedPayload = updateInfoSchema.safeParse(payload)
+  
+  if (!parsedPayload.success) {
+    res.status(411).json({
+      msg: "You have entered wrong inputs.",
+    });
+  }
+
+
+  //This in ideal situation shouldnt be rewritten as this work is already done in the middleware.
+  //But i am writting again because i dont know typescript and i am getting lots of errors. so just putting whatever works
+  const authHeader = req.headers.authorization
+
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    res.status(403).json({});
+  }
+
+  const token = authHeader?.split(" ")[1];
+  const decoded = jwt.verify(token, JWT_SECRET) as CostumJwtPayload
+
+/////////
+
+
+
+}catch(err){
+  console.log(err)
+  res.status(403).json({});
+
+}
+
+})
