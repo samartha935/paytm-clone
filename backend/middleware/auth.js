@@ -1,11 +1,7 @@
 import jwt, { JwtPayload } from "jsonwebtoken"
 import { JWT_SECRET } from "../config"
 
-export interface CostumJwtPayload extends JwtPayload {
-    documentId : string
-}
-
-export function authMiddleware (req : any,res : any ,next:any){
+export function authMiddleware (req, res, next){
 
     const authHeader = req.headers.authorization
     
@@ -17,7 +13,7 @@ export function authMiddleware (req : any,res : any ,next:any){
 
 
     try {
-        const decoded = jwt.verify(token, JWT_SECRET) as CostumJwtPayload
+        const decoded = jwt.verify(token, JWT_SECRET) 
         req.documentId = decoded.documentId
         next()
 

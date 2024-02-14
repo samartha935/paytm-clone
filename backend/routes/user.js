@@ -2,7 +2,7 @@ import express from "express";
 import jwt from "jsonwebtoken"
 import { User } from "../db/db";
 import { JWT_SECRET } from "../config";
-import { CostumJwtPayload, authMiddleware } from "../middleware/auth";
+import { authMiddleware } from "../middleware/auth";
 import { signUpSchema, signInSchema, updateInfoSchema } from "../zodSchema/zod";
 
 
@@ -112,7 +112,7 @@ userRouter.post("/update", authMiddleware ,async(req,res)=>{
   }
 
   const token = authHeader?.split(" ")[1];
-  const decoded = jwt.verify(token, JWT_SECRET) as CostumJwtPayload
+  const decoded = jwt.verify(token, JWT_SECRET)
 
 /////////
 
