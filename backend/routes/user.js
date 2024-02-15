@@ -1,11 +1,9 @@
-import express from "express";
-import jwt from "jsonwebtoken"
-import { User } from "../db/db";
-import { JWT_SECRET } from "../config";
-import { authMiddleware } from "../middleware/auth";
-import { signUpSchema, signInSchema, updateInfoSchema } from "../zodSchema/zod";
-
-
+const express = require("express")
+const jwt = require("jsonwebtoken")
+const { User } = require ("../db/db")
+const { JWT_SECRET } = require ("../config")
+const { authMiddleware } = require ("../middleware/auth")
+const { signUpSchema, signInSchema, updateInfoSchema } = require ("../zodSchema/zod")
 
 
 export const userRouter = express.Router();

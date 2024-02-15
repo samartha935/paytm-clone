@@ -1,6 +1,4 @@
-
-import z from "zod";
-
+const z = require("zod")
 
 export const signUpSchema = z.object({
     firstName: z.string().max(30),

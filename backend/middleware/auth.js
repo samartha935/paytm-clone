@@ -1,4 +1,4 @@
-import jwt, { JwtPayload } from "jsonwebtoken"
+const jwt = require("jsonwebtoken")
 import { JWT_SECRET } from "../config"
 
 export function authMiddleware (req, res, next){

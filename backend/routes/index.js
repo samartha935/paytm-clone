@@ -1,4 +1,4 @@
-import express from "express"
+const express = require("express")
 import {userRouter} from "./user";
 
 export const rootRouter = express.Router()
